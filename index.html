@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智囊團</title>
+<meta name="description" content="吳寶春團隊內部溝通、交辦、待辦">
+<meta name="theme-color" content="#8A4B1F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="智囊團">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1 id="appName">智囊團</h1>
+    <div class="me">目前身分：<span id="meName">—</span><span id="admTag"></span><br><button id="changeMe">更換名字</button>　<button id="admBtn">管理後台</button></div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="issue">問題<span class="n" id="n-issue">0</span></button>
+    <button role="tab" data-tab="wish">許願池<span class="n" id="n-wish">0</span></button>
+    <button role="tab" data-tab="sop">SOP<span class="n" id="n-sop">0</span></button>
+    <button role="tab" data-tab="assign">交辦<span class="n" id="n-assign">0</span></button>
+    <button role="tab" data-tab="todo">待辦<span class="n" id="n-todo">0</span></button>
+    <button role="tab" data-tab="done">完成區<span class="n" id="n-done">0</span></button>
+  </div>
+
+  <div class="stores" id="stores"></div>
+  <div class="chips" id="chips"></div>
+  <div class="bar">
+    <span class="live"><span class="dot off" id="liveDot"></span><span id="sync">連線中…</span></span>
+    <button id="refresh">重新整理</button>
+  </div>
+  <div id="list"></div>
+</div>
+
+<button class="fab" id="addBtn">＋ 新增</button>
+
+<dialog id="nameDlg"><div class="sheet" id="nameForm">
+  <h2>請輸入你的名字</h2>
+  <p class="hint">發問、交辦、回饋時會顯示這個名字，讓大家知道是誰寫的。</p>
+  <input class="f" id="nameInput" maxlength="20" placeholder="例如：門市 小芳">
+  <div class="err" id="nameErr"></div>
+  <div class="row"><button class="go" type="button" id="nameOk">確定</button></div>
+</div></dialog>
+
+<dialog id="loginDlg"><div class="sheet">
+  <h2>管理員登入</h2>
+  <p class="hint" id="loginHint">用管理員 Email 和密碼登入後，就能修改分店和分類。帳號要先請現有管理員在 Firebase 後台或「管理後台 → 新增管理員」幫你建立。</p>
+  <label for="pw0">Email</label><input class="f" id="pw0" type="email" autocomplete="username" placeholder="you@example.com">
+  <label for="pw1">密碼</label><input class="f" id="pw1" type="password" autocomplete="current-password">
+  <div class="err" id="loginErr"></div>
+  <div class="row"><button type="button" id="loginNo">取消</button><button class="go" type="button" id="loginYes">登入</button></div>
+</div></dialog>
+
+<dialog id="pwChangeDlg"><div class="sheet">
+  <h2>變更我的密碼</h2>
+  <label for="npw1">新密碼</label><input class="f" id="npw1" type="password" autocomplete="new-password">
+  <label for="npw2">再輸入一次新密碼</label><input class="f" id="npw2" type="password" autocomplete="new-password">
+  <div class="err" id="pwChangeErr"></div>
+  <div class="row"><button type="button" id="pwChangeNo">取消</button><button class="go" type="button" id="pwChangeYes">儲存</button></div>
+</div></dialog>
+
+<dialog id="admDlg"><div class="sheet adm">
+  <h2>管理後台</h2>
+  <p class="hint">在這裡新增、改名、排序或刪除分類。改名時，舊資料的分類也會一起更新。</p>
+  <div id="admLists"></div>
+  <h3>管理員帳號</h3>
+  <p class="hint">新增管理員前，請先請對方到 Firebase Console → Authentication 新增一組 Email／密碼帳號，再把 Email 加進下面清單。</p>
+  <div id="admAdmins"></div>
+  <h3>我的帳號</h3>
+  <div class="acts" style="margin-top:4px"><button type="button" id="pwChange">變更我的密碼</button><button type="button" id="admLogout">登出管理員</button></div>
+  <div class="row"><button class="go" type="button" id="admClose">關閉</button></div>
+</div></dialog>
+
+<dialog id="askDlg"><div class="sheet">
+  <h2 id="askMsg"></h2>
+  <input class="f" id="askInput" maxlength="30">
+  <div class="row"><button type="button" id="askNo">取消</button><button class="go" type="button" id="askYes">確定</button></div>
+</div></dialog>
+
+<dialog id="addDlg"><div class="sheet" id="addForm">
+  <h2 id="dlgTitle">新增一筆</h2>
+  <div class="seg" id="seg">
+    <button type="button" data-k="issue">問題</button>
+    <button type="button" data-k="wish">許願</button>
+    <button type="button" data-k="sop">SOP</button>
+    <button type="button" data-k="assign">交辦</button>
+    <button type="button" data-k="todo">待辦</button>
+  </div>
+  <p class="hint" id="segHint"></p>
+  <label for="fStore">分店</label>
+  <select class="f" id="fStore"></select>
+  <label for="fCat">分類</label>
+  <select class="f" id="fCat"></select>
+  <div id="newCatWrap" hidden><label for="fNewCat">新分類名稱</label><input class="f" id="fNewCat" maxlength="12"></div>
+  <label for="fTitle">標題</label>
+  <input class="f" id="fTitle" maxlength="60" required placeholder="一句話說清楚">
+  <label for="fBody">內容說明</label>
+  <textarea class="f" id="fBody" placeholder="發生在哪裡、什麼狀況、需要什麼協助"></textarea>
+  <div id="assignWrap"><label for="fTo">交辦給</label><input class="f" id="fTo" maxlength="30" placeholder="負責人名字"></div>
+  <div id="dueWrap"><label for="fDue">期限（可不填）</label>
+  <input class="f" id="fDue" type="date"></div>
+  <label id="anonWrap" style="display:flex;gap:8px;align-items:center;font-weight:500"><input type="checkbox" id="fAnon"> 匿名發表（不顯示我的名字）</label>
+  <div class="err" id="addErr"></div>
+  <div class="row"><button type="button" id="cancelAdd">取消</button><button class="go" type="button" id="addOk">送出</button></div>
+</div></dialog>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -23,9 +23,11 @@
   </header>
 
   <div class="tabs" role="tablist">
+    <button role="tab" data-tab="urgent">緊急<span class="n" id="n-urgent">0</span></button>
     <button role="tab" data-tab="issue">問題<span class="n" id="n-issue">0</span></button>
     <button role="tab" data-tab="wish">許願池<span class="n" id="n-wish">0</span></button>
     <button role="tab" data-tab="sop">SOP<span class="n" id="n-sop">0</span></button>
+    <button role="tab" data-tab="obs">觀察<span class="n" id="n-obs">0</span></button>
     <button role="tab" data-tab="assign">交辦<span class="n" id="n-assign">0</span></button>
     <button role="tab" data-tab="todo">待辦<span class="n" id="n-todo">0</span></button>
     <button role="tab" data-tab="done">完成區<span class="n" id="n-done">0</span></button>
@@ -88,9 +90,11 @@
 <dialog id="addDlg"><div class="sheet" id="addForm">
   <h2 id="dlgTitle">新增一筆</h2>
   <div class="seg" id="seg">
+    <button type="button" data-k="urgent">緊急</button>
     <button type="button" data-k="issue">問題</button>
     <button type="button" data-k="wish">許願</button>
     <button type="button" data-k="sop">SOP</button>
+    <button type="button" data-k="obs">觀察</button>
     <button type="button" data-k="assign">交辦</button>
     <button type="button" data-k="todo">待辦</button>
   </div>
@@ -104,6 +108,9 @@
   <input class="f" id="fTitle" maxlength="60" required placeholder="一句話說清楚">
   <label for="fBody">內容說明</label>
   <textarea class="f" id="fBody" placeholder="發生在哪裡、什麼狀況、需要什麼協助"></textarea>
+  <label for="fPhotos">照片（最多 4 張，選填，會自動壓縮）</label>
+  <input class="f" id="fPhotos" type="file" accept="image/*" multiple>
+  <div class="photo-grid" id="fPhotoPreview"></div>
   <div id="assignWrap"><label for="fTo">交辦給</label><input class="f" id="fTo" maxlength="30" placeholder="負責人名字"></div>
   <div id="dueWrap"><label for="fDue">期限（可不填）</label>
   <input class="f" id="fDue" type="date"></div>
@@ -113,6 +120,7 @@
 </div></dialog>
 
 <div class="toast" id="toast"></div>
+<div class="lightbox" id="lightbox"><img id="lightboxImg" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

@@ -1,4 +1,4 @@
-const CACHE = 'zhinangtuan-v2';
+const CACHE = 'zhinangtuan-v3';
 const SHELL = ['./', './index.html', './styles.css', './app.js', './manifest.json'];
 // firebase-config.js 故意不放進離線快取：它必須永遠拿到最新內容，
 // 不然改了設定、換了金鑰，使用者還會一直用到舊的快取版本。

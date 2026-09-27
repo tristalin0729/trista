@@ -1,6 +1,7 @@
 :root{
   --paper:#EEF0EC; --slip:#FFFFFF; --ink:#1F2A24; --mute:#6B736D; --line:#D5D9D3;
   --crust:#8A4B1F; --issue:#B3362B; --assign:#2F5D8A; --todo:#4E7D4A; --wish:#A8741A; --sop:#5B4B8A; --done:#7A7F7B;
+  --urgent:#6D1B2F; --obs:#1F6F6F;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;font-size:15px;line-height:1.55}
@@ -32,7 +33,7 @@ h1{margin:0;font-size:26px;letter-spacing:.04em;font-weight:800;border-bottom:5p
 .slip{background:var(--slip);border-radius:4px;margin-bottom:12px;padding:14px 14px 12px 22px;position:relative;box-shadow:0 1px 0 var(--line)}
 .slip::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--k);
   -webkit-mask:radial-gradient(circle at 8px 6px,transparent 3px,#000 3.5px) 0 0/8px 12px;mask:radial-gradient(circle at 8px 6px,transparent 3px,#000 3.5px) 0 0/8px 12px}
-.slip.issue{--k:var(--issue)}.slip.assign{--k:var(--assign)}.slip.todo{--k:var(--todo)}.slip.wish{--k:var(--wish)}.slip.sop{--k:var(--sop)}.slip.done{--k:var(--done)}
+.slip.issue{--k:var(--issue)}.slip.assign{--k:var(--assign)}.slip.todo{--k:var(--todo)}.slip.wish{--k:var(--wish)}.slip.sop{--k:var(--sop)}.slip.done{--k:var(--done)}.slip.urgent{--k:var(--urgent)}.slip.obs{--k:var(--obs)}
 .top{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;margin-bottom:4px}
 .kind{color:#fff;background:var(--k);padding:1px 8px;border-radius:3px;font-weight:700}
 .cat{border:1px solid var(--line);padding:0 8px;border-radius:3px;color:var(--mute)}
@@ -59,9 +60,10 @@ dialog{border:0;border-radius:12px;padding:0;width:min(560px,94vw);background:va
 dialog::backdrop{background:rgba(20,28,24,.45)}
 .sheet{padding:18px;max-height:86vh;overflow:auto}
 .sheet h2{margin:0 0 12px;font-size:19px}
-.seg{display:grid;grid-template-columns:repeat(5,1fr);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;margin-bottom:12px}
-.seg button{border:0;background:none;padding:8px;font-weight:700;border-right:1.5px solid var(--ink)}
-.seg button:last-child{border-right:0}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.seg button{border:0;background:none;padding:8px 2px;font-weight:700;font-size:13.5px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+.seg button:nth-child(4n){border-right:0}
+.seg button:nth-last-child(-n+3){border-bottom:0}
 .seg button.on{background:var(--ink);color:#fff}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 .f{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:#fafafa}
@@ -83,4 +85,21 @@ textarea.f{min-height:90px;resize:vertical}
 .admbadge{background:var(--sop);color:#fff;border-radius:3px;padding:0 6px;font-size:11px;margin-left:4px}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:6px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:50}
 .toast.show{opacity:1}
+
+.photo-grid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.photo-grid:empty{margin:0}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#eee}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.photo-thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:0;font-size:13px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+.slip .photo-grid .photo-thumb{width:64px;height:64px}
+.c .photo-grid{margin:4px 0 6px}
+.c .photo-grid .photo-thumb{width:52px;height:52px}
+.fb .cf{flex-wrap:wrap}
+.fb .photo-add{flex:none;border:1px dashed var(--line);background:#fafafa;border-radius:6px;padding:6px 10px;font-size:13px;color:var(--mute)}
+.fb .photo-add input{display:none}
+.fb .cf .commentPending{flex-basis:100%}
+
+.lightbox{position:fixed;inset:0;background:rgba(10,12,10,.92);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
+.lightbox.show{display:flex}
+.lightbox img{max-width:100%;max-height:100%;border-radius:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}

@@ -15,6 +15,7 @@ h1{margin:0;font-size:26px;letter-spacing:.04em;font-weight:800;border-bottom:5p
 .me button{background:none;border:0;color:var(--crust);text-decoration:underline;padding:0}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--ink);margin:14px 0 10px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--slip)}
 .tabs button{border:0;background:var(--slip);padding:8px 2px;font-size:14px;font-weight:700;position:relative}
+.tabs button[data-tab="urgent"]:not([aria-selected=true]){background:#F7DEDE;color:var(--urgent)}
 .tabs button[aria-selected=true]{background:var(--ink);color:#fff}
 .tabs .n{display:block;font-size:12px;font-weight:500;opacity:.75}
 .stores{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:6px;margin-bottom:8px}

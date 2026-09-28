@@ -4,7 +4,7 @@
    以及管理員登入：前端密碼雜湊 → 真正的 Firebase Auth（Email/密碼），
    權限檢查在 Firestore 安全性規則（伺服器端），不是只靠前端判斷。 */
 
-const KINDS={urgent:'緊急',issue:'問題',wish:'許願',sop:'SOP',obs:'觀察',assign:'交辦',todo:'待辦'};
+const KINDS={urgent:'緊急',issue:'問題',wish:'許願',sop:'SOP',obs:'觀察日誌',assign:'交辦',todo:'待辦'};
 const HINTS={urgent:'需要馬上處理的緊急狀況，用最顯眼的顏色排在最前面。可標記完成、可轉成交辦。',issue:'看到的問題寫上來，所有人都看得到，也都可以回饋。',assign:'指派給特定的人處理。',todo:'自己或團隊要做、還沒做的事。',sop:'標準作業流程，大家都能查看。分店選「全分店」代表三間店通用。',obs:'客人反應、活動、營運、營銷的觀察記錄，當作持續累積的日誌，不會消失、也不會進完成區，但可以編輯更新。',wish:'員工福利、想新增的設備器具、同事相處、人力不夠太累……想說的都可以寫，大家可以按「我也想要」。'};
 const DEFAULT_WISH=['員工福利','設備器具','人際相處','人力配置','其他'];
 const DEFAULT_CATS=['門市營運','產品品質','設備維修','人員排班','食安衛生','客人意見','其他'];
@@ -131,7 +131,7 @@ function render(){
   list.sort((a,b)=>(tab==='sop'||tab==='obs')?((b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt)):tab==='done'?(b.doneAt-a.doneAt):tab==='wish'?(((b.votes||[]).length-(a.votes||[]).length)||b.createdAt-a.createdAt):(b.createdAt-a.createdAt));
   if(!list.length){
     let msg;
-    const catLabel=tab==='sop'?'SOP':'觀察';
+    const catLabel=tab==='sop'?'SOP':'觀察日誌';
     const catList=tab==='sop'?sopCats:obsCats;
     if(tab==='done')msg='還沒有完成的項目。';
     else if((tab==='sop'||tab==='obs')&&!catList.length)msg=isAdmin?`先按上方「＋ 新增分類」建立${catLabel}分類，再按右下角「新增」寫第一筆。`:`還沒有${catLabel}分類，請管理員到「管理後台」新增。`;
@@ -260,7 +260,7 @@ $('#chips').addEventListener('click',async e=>{const b=e.target.closest('button'
     if(!isAdmin){toast('請先登入管理員');return}
     const key=tab==='obs'?'obscats':'sopcats';
     const curList=tab==='obs'?obsCats:sopCats;
-    const n=((await ask(`新的${tab==='obs'?'觀察':'SOP'}分類名稱`,true))||'').trim();if(!n)return;
+    const n=((await ask(`新的${tab==='obs'?'觀察日誌':'SOP'}分類名稱`,true))||'').trim();if(!n)return;
     if(curList.includes(n)){toast('已經有這個名稱');return}
     const next=[...curList,n];
     try{await db.collection('config').doc(key).set({list:next});cat=n;toast('已新增分類')}catch(err){toast('儲存失敗：'+err.message)}
@@ -385,7 +385,7 @@ const LISTS=[
   {id:'cats',label:'問題、緊急、交辦、待辦的小分類',key:'categories',get:()=>cats,match:(i,o)=>['issue','urgent','assign','todo'].includes(i.kind)&&i.cat===o,apply:(i,n)=>i.cat=n},
   {id:'wish',label:'許願池的小分類',key:'wishcats',get:()=>wishCats,match:(i,o)=>i.kind==='wish'&&i.cat===o,apply:(i,n)=>i.cat=n},
   {id:'sop',label:'SOP 的小分類',key:'sopcats',get:()=>sopCats,match:(i,o)=>i.kind==='sop'&&i.cat===o,apply:(i,n)=>i.cat=n},
-  {id:'obs',label:'觀察的小分類',key:'obscats',get:()=>obsCats,match:(i,o)=>i.kind==='obs'&&i.cat===o,apply:(i,n)=>i.cat=n}];
+  {id:'obs',label:'觀察日誌的小分類',key:'obscats',get:()=>obsCats,match:(i,o)=>i.kind==='obs'&&i.cat===o,apply:(i,n)=>i.cat=n}];
 function openAdm(){renderAdm();$('#admDlg').showModal()}
 function renderAdm(){
   $('#admLists').innerHTML=LISTS.map(L=>`<h3>${L.label}</h3>`+
